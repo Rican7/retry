@@ -4,10 +4,10 @@ import (
 	"testing"
 )
 
-func TestAttemptLimiter(t *testing.T) {
+func TestLimit(t *testing.T) {
 	const attemptLimit = 3
 
-	strategy := AttemptLimiter(attemptLimit)
+	strategy := Limit(attemptLimit)
 
 	if !strategy(1) {
 		t.Error("strategy expected to return true")
