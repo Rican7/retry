@@ -23,11 +23,19 @@ func Delay(duration time.Duration) Strategy {
 	}
 }
 
-// Wait creates a Strategy that waits the given duration after the first attempt
-func Wait(duration time.Duration) Strategy {
+// Wait creates a Strategy that waits the given durations for each attempt after
+// the first. If the number of attempts is greater than the number of durations
+// provided, then the strategy uses the last duration provided.
+func Wait(durations ...time.Duration) Strategy {
 	return func(attempt uint) bool {
 		if 0 < attempt {
-			time.Sleep(duration)
+			durationIndex := int(attempt - 1)
+
+			if len(durations) >= durationIndex {
+				durationIndex = len(durations) - 1
+			}
+
+			time.Sleep(durations[durationIndex])
 		}
 
 		return true
