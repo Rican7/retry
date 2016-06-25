@@ -5,7 +5,7 @@ import (
 )
 
 func TestAttemptLimiter(t *testing.T) {
-	const attemptLimit = 3;
+	const attemptLimit = 3
 
 	strategy := AttemptLimiter(attemptLimit)
 

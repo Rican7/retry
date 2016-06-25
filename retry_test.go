@@ -18,14 +18,14 @@ func TestRetry(t *testing.T) {
 }
 
 func TestRetryRetriesUntilNoErrorReturned(t *testing.T) {
-	const errorUntilAttemptNumber = 5;
+	const errorUntilAttemptNumber = 5
 
 	var attemptsMade uint
 
 	action := func(attempt uint) error {
 		attemptsMade = attempt
 
-		if (errorUntilAttemptNumber == attempt) {
+		if errorUntilAttemptNumber == attempt {
 			return nil
 		}
 
@@ -68,7 +68,7 @@ func TestShouldAttemptWithStrategy(t *testing.T) {
 		t.Error("expected to return true")
 	}
 
-	should = shouldAttempt(1 + attemptNumberShouldReturnFalse, strategy)
+	should = shouldAttempt(1+attemptNumberShouldReturnFalse, strategy)
 
 	if !should {
 		t.Error("expected to return true")

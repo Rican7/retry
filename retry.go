@@ -18,8 +18,8 @@ type Strategy func(attempt uint) bool
 func Retry(action Action, strategies ...Strategy) error {
 	var err error
 
-	for attempt := (uint)(0); (0 == attempt || nil != err) && shouldAttempt(attempt, strategies...); attempt++ {
-		err = action(attempt);
+	for attempt := uint(0); (0 == attempt || nil != err) && shouldAttempt(attempt, strategies...); attempt++ {
+		err = action(attempt)
 	}
 
 	return err

@@ -15,7 +15,7 @@ func AttemptLimiter(attemptLimit uint) Strategy {
 // Delay creates a Strategy that waits the given duration on the first attempt
 func Delay(duration time.Duration) Strategy {
 	return func(attempt uint) bool {
-		if (0 == attempt) {
+		if 0 == attempt {
 			time.Sleep(duration)
 		}
 
@@ -26,7 +26,7 @@ func Delay(duration time.Duration) Strategy {
 // Wait creates a Strategy that waits the given duration after the first attempt
 func Wait(duration time.Duration) Strategy {
 	return func(attempt uint) bool {
-		if (0 < attempt) {
+		if 0 < attempt {
 			time.Sleep(duration)
 		}
 
