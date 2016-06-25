@@ -26,7 +26,7 @@ func Retry(action Action, strategies ...Strategy) error {
 }
 
 // shouldAttempt evaluates the provided strategies with the given attempt to
-// determine if the Retry loop should make another attempt
+// determine if the Retry loop should make another attempt.
 func shouldAttempt(attempt uint, strategies ...Strategy) bool {
 	shouldAttempt := true
 

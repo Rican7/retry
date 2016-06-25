@@ -5,14 +5,14 @@ import (
 )
 
 // Limit creates a Strategy that limits the number of attempts that Retry will
-// make
+// make.
 func Limit(attemptLimit uint) Strategy {
 	return func(attempt uint) bool {
 		return (attempt < attemptLimit)
 	}
 }
 
-// Delay creates a Strategy that waits the given duration on the first attempt
+// Delay creates a Strategy that waits the given duration on the first attempt.
 func Delay(duration time.Duration) Strategy {
 	return func(attempt uint) bool {
 		if 0 == attempt {
@@ -42,7 +42,7 @@ func Wait(durations ...time.Duration) Strategy {
 	}
 }
 
-// Backoff creates a Strategy that waits an increasing duration
+// Backoff creates a Strategy that waits an increasing duration.
 func Backoff(duration time.Duration) Strategy {
 	return func(attempt uint) bool {
 		time.Sleep(duration * time.Duration(attempt))
