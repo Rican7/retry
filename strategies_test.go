@@ -56,3 +56,39 @@ func TestWait(t *testing.T) {
 		)
 	}
 }
+
+func TestWaitWithMultipleDurations(t *testing.T) {
+	waitDurations := []time.Duration{
+		time.Duration(10 * time.Millisecond),
+		time.Duration(20 * time.Millisecond),
+		time.Duration(30 * time.Millisecond),
+		time.Duration(40 * time.Millisecond),
+	}
+
+	strategy := Wait(waitDurations...)
+
+	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
+		t.Error("strategy expected to return true in 0 time")
+	}
+
+	if now := time.Now(); !strategy(1) || waitDurations[0] > time.Since(now) {
+		t.Errorf(
+			"strategy expected to return true in %s",
+			time.Duration(waitDurations[0]),
+		)
+	}
+
+	if now := time.Now(); !strategy(3) || waitDurations[2] > time.Since(now) {
+		t.Errorf(
+			"strategy expected to return true in %s",
+			waitDurations[2],
+		)
+	}
+
+	if now := time.Now(); !strategy(999) || waitDurations[len(waitDurations) - 1] > time.Since(now) {
+		t.Errorf(
+			"strategy expected to return true in %s",
+			waitDurations[len(waitDurations) - 1],
+		)
+	}
+}
