@@ -31,7 +31,7 @@ func Wait(durations ...time.Duration) Strategy {
 		if 0 < attempt {
 			durationIndex := int(attempt - 1)
 
-			if len(durations) >= durationIndex {
+			if len(durations) <= durationIndex {
 				durationIndex = len(durations) - 1
 			}
 
