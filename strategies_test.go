@@ -85,10 +85,10 @@ func TestWaitWithMultipleDurations(t *testing.T) {
 		)
 	}
 
-	if now := time.Now(); !strategy(999) || waitDurations[len(waitDurations) - 1] > time.Since(now) {
+	if now := time.Now(); !strategy(999) || waitDurations[len(waitDurations)-1] > time.Since(now) {
 		t.Errorf(
 			"strategy expected to return true in %s",
-			waitDurations[len(waitDurations) - 1],
+			waitDurations[len(waitDurations)-1],
 		)
 	}
 }
@@ -109,10 +109,10 @@ func TestBackoff(t *testing.T) {
 		)
 	}
 
-	if now := time.Now(); !strategy(5) || (5 * backoffDuration) > time.Since(now) {
+	if now := time.Now(); !strategy(5) || (5*backoffDuration) > time.Since(now) {
 		t.Errorf(
 			"strategy expected to return true in %s",
-			time.Duration(5 * backoffDuration),
+			time.Duration(5*backoffDuration),
 		)
 	}
 }
