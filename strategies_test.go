@@ -96,7 +96,7 @@ func TestWaitWithMultipleDurations(t *testing.T) {
 func TestBackoff(t *testing.T) {
 	const backoffDuration = time.Duration(10 * time.Millisecond)
 
-	strategy := Backoff(backoffDuration)
+	strategy := Backoff(backoffDuration, Linear())
 
 	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
 		t.Error("strategy expected to return true in 0 time")
