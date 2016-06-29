@@ -1,6 +1,7 @@
 package strategy
 
 import (
+	"math"
 	"testing"
 	"time"
 )
@@ -26,5 +27,43 @@ func TestBackoff(t *testing.T) {
 			"strategy expected to return true in %s",
 			time.Duration(5*backoffDuration),
 		)
+	}
+}
+
+func TestIncremental(t *testing.T) {
+	const increment = time.Duration(1 * time.Nanosecond)
+
+	modifier := Incremental(increment)
+
+	duration := time.Duration(1 * time.Millisecond)
+	result := modifier(duration, 3)
+	expected := (increment * 3) + duration
+
+	if result != expected {
+		t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+	}
+}
+
+func TestLinear(t *testing.T) {
+	modifier := Linear()
+
+	duration := time.Duration(1 * time.Millisecond)
+	result := modifier(duration, 3)
+	expected := 3 * duration
+
+	if result != expected {
+		t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+	}
+}
+
+func TestExponential(t *testing.T) {
+	modifier := Exponential()
+
+	duration := time.Duration(1 * time.Millisecond)
+	result := modifier(duration, 3)
+	expected := time.Duration(math.Pow(float64(duration), 3))
+
+	if result != expected {
+		t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
 	}
 }
