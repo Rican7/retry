@@ -34,7 +34,7 @@ func Delay(duration time.Duration) Strategy {
 // provided, then the strategy uses the last duration provided.
 func Wait(durations ...time.Duration) Strategy {
 	return func(attempt uint) bool {
-		if 0 < attempt {
+		if 0 < attempt && 0 < len(durations) {
 			durationIndex := int(attempt - 1)
 
 			if len(durations) <= durationIndex {
