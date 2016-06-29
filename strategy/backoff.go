@@ -39,8 +39,8 @@ func Linear() BackoffModifier {
 }
 
 // Exponential TODO
-func Exponential() BackoffModifier {
+func Exponential(base float64) BackoffModifier {
 	return func(duration time.Duration, attempt uint) time.Duration {
-		return time.Duration(math.Pow(float64(duration), float64(attempt)))
+		return (duration * time.Duration(math.Pow(base, float64(attempt))))
 	}
 }
