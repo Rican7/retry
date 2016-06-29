@@ -41,6 +41,18 @@ func TestDelay(t *testing.T) {
 }
 
 func TestWait(t *testing.T) {
+	strategy := Wait()
+
+	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
+		t.Error("strategy expected to return true in 0 time")
+	}
+
+	if now := time.Now(); !strategy(999) || 0 != time.Since(now) {
+		t.Error("strategy expected to return true in 0 time")
+	}
+}
+
+func TestWaitWithDuration(t *testing.T) {
 	const waitDuration = time.Duration(10 * time.Millisecond)
 
 	strategy := Wait(waitDuration)
