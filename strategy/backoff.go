@@ -16,7 +16,9 @@ type BackoffModifier func(duration time.Duration, attempt uint) time.Duration
 // duration.
 func Backoff(initial time.Duration, modifier BackoffModifier) Strategy {
 	return func(attempt uint) bool {
-		time.Sleep(modifier(initial, attempt))
+		if 0 < attempt {
+			time.Sleep(modifier(initial, attempt))
+		}
 
 		return true
 	}
