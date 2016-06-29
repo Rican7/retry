@@ -1,8 +1,13 @@
 package retry
 
 import (
+	"math"
 	"time"
 )
+
+// BackoffModifier (TODO: name?!) defines a function that calculates a
+// time.Duration based on a given retry attempt number.
+type BackoffModifier func(duration time.Duration, attempt uint) time.Duration
 
 // Limit creates a Strategy that limits the number of attempts that Retry will
 // make.
@@ -12,7 +17,8 @@ func Limit(attemptLimit uint) Strategy {
 	}
 }
 
-// Delay creates a Strategy that waits the given duration on the first attempt.
+// Delay creates a Strategy that waits the given duration before the first
+// attempt is made.
 func Delay(duration time.Duration) Strategy {
 	return func(attempt uint) bool {
 		if 0 == attempt {
@@ -42,11 +48,33 @@ func Wait(durations ...time.Duration) Strategy {
 	}
 }
 
-// Backoff creates a Strategy that waits an increasing duration.
-func Backoff(duration time.Duration) Strategy {
+// Backoff creates a Strategy that waits before each attempt, with an increasing
+// duration.
+func Backoff(initial time.Duration, modifier BackoffModifier) Strategy {
 	return func(attempt uint) bool {
-		time.Sleep(duration * time.Duration(attempt))
+		time.Sleep(modifier(initial, attempt))
 
 		return true
+	}
+}
+
+// Incremental TODO
+func Incremental(increment time.Duration) BackoffModifier {
+	return func(duration time.Duration, attempt uint) time.Duration {
+		return duration + (increment * time.Duration(attempt))
+	}
+}
+
+// Linear TODO
+func Linear() BackoffModifier {
+	return func(duration time.Duration, attempt uint) time.Duration {
+		return (duration * time.Duration(attempt))
+	}
+}
+
+// Exponential TODO
+func Exponential() BackoffModifier {
+	return func(duration time.Duration, attempt uint) time.Duration {
+		return time.Duration(math.Pow(float64(duration), float64(attempt)))
 	}
 }
