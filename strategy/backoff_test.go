@@ -33,39 +33,50 @@ func TestBackoff(t *testing.T) {
 }
 
 func TestIncremental(t *testing.T) {
-	const increment = time.Duration(1 * time.Nanosecond)
+	const increment = time.Nanosecond
 
 	modifier := Incremental(increment)
 
-	duration := time.Duration(1 * time.Millisecond)
-	result := modifier(duration, 3)
-	expected := (increment * 3) + duration
+	duration := time.Millisecond
 
-	if result != expected {
-		t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+	for i := uint(0); i < 10; i++ {
+		result := modifier(duration, i)
+		expected := duration + (increment * time.Duration(i))
+
+		if result != expected {
+			t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+		}
 	}
 }
 
 func TestLinear(t *testing.T) {
 	modifier := Linear()
 
-	duration := time.Duration(1 * time.Millisecond)
-	result := modifier(duration, 3)
-	expected := 3 * duration
+	duration := time.Millisecond
 
-	if result != expected {
-		t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+	for i := uint(0); i < 10; i++ {
+		result := modifier(duration, i)
+		expected := duration * time.Duration(i)
+
+		if result != expected {
+			t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+		}
 	}
 }
 
 func TestExponential(t *testing.T) {
-	modifier := Exponential()
+	const base = 2
 
-	duration := time.Duration(1 * time.Millisecond)
-	result := modifier(duration, 3)
-	expected := time.Duration(math.Pow(float64(duration), 3))
+	modifier := Exponential(base)
 
-	if result != expected {
-		t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+	duration := time.Second
+
+	for i := uint(0); i < 10; i++ {
+		result := modifier(duration, i)
+		expected := duration * time.Duration(math.Pow(base, float64(i)))
+
+		if result != expected {
+			t.Errorf("modifier expected to return a %s duration, but received %s instead", expected, result)
+		}
 	}
 }
