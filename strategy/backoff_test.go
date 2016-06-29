@@ -8,25 +8,27 @@ import (
 
 func TestBackoff(t *testing.T) {
 	const backoffDuration = time.Duration(10 * time.Millisecond)
+	const modifierDurationBase = time.Millisecond
 
-	strategy := Backoff(backoffDuration, Linear())
+	modifier := func(duration time.Duration, attempt uint) time.Duration {
+		return duration - (modifierDurationBase * time.Duration(attempt))
+	}
+
+	strategy := Backoff(backoffDuration, modifier)
 
 	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
 		t.Error("strategy expected to return true in 0 time")
 	}
 
-	if now := time.Now(); !strategy(1) || backoffDuration > time.Since(now) {
-		t.Errorf(
-			"strategy expected to return true in %s",
-			time.Duration(backoffDuration),
-		)
-	}
+	for i := uint(1); i < 10; i++ {
+		expectedResult := backoffDuration - (modifierDurationBase * time.Duration(i))
 
-	if now := time.Now(); !strategy(5) || (5*backoffDuration) > time.Since(now) {
-		t.Errorf(
-			"strategy expected to return true in %s",
-			time.Duration(5*backoffDuration),
-		)
+		if now := time.Now(); !strategy(i) || expectedResult > time.Since(now) {
+			t.Errorf(
+				"strategy expected to return true in %s",
+				expectedResult,
+			)
+		}
 	}
 }
 
