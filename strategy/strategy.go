@@ -1,9 +1,22 @@
-package retry
+// Package strategy provides a way to change the way that retry is performed.
+//
+// Copyright © 2016 Trevor N. Suarez (Rican7)
+package strategy
 
 import (
 	"math"
 	"time"
 )
+
+// Strategy defines a function that Retry calls before every successive attempt
+// to determine whether it should make the next attempt or not. Returning `true`
+// allows for the next attempt to be made. Returning `false` halts the retrying
+// process and returns the last error returned by the called Action.
+//
+// The strategy will be passed an "attempt" number on each successive retry
+// iteration, starting with a `0` value before the first attempt is actually
+// made. This allows for a pre-action delay, etc.
+type Strategy func(attempt uint) bool
 
 // BackoffModifier (TODO: name?!) defines a function that calculates a
 // time.Duration based on a given retry attempt number.
