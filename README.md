@@ -14,3 +14,4 @@ A simple, stateless, functional mechanism to perform actions repetitively until 
 - [ ] Backoff "jitter"
 - [ ] Makefile
 - [ ] Travis-CI integration
+- [ ] `doc.go` files in each package (for consolidated documentation)
