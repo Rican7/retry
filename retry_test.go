@@ -2,6 +2,8 @@ package retry
 
 import (
 	"errors"
+	"log"
+	"os"
 	"testing"
 )
 
@@ -118,5 +120,29 @@ func TestShouldAttemptWithMultipleStrategies(t *testing.T) {
 
 	if should {
 		t.Error("expected to return false")
+	}
+}
+
+func Example_simple() {
+	Retry(func(attempt uint) error {
+		return nil // Do something that may or may not cause an error
+	})
+}
+
+func Example_fileOpen() {
+	const logFilePath = "/var/log/myapp.log"
+
+	var logFile *os.File
+
+	err := Retry(func(attempt uint) error {
+		var err error
+
+		logFile, err = os.Open(logFilePath)
+
+		return err
+	})
+
+	if nil != err {
+		log.Fatalf("Unable to open file %q with error %q", logFilePath, err)
 	}
 }
