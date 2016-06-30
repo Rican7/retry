@@ -24,21 +24,25 @@ func Backoff(initial time.Duration, algorithm BackoffAlgorithm) Strategy {
 	}
 }
 
-// Incremental TODO
+// Incremental creates a BackoffAlgorithm that increments the initial duration
+// by the given increment for each attempt.
 func Incremental(increment time.Duration) BackoffAlgorithm {
 	return func(initial time.Duration, attempt uint) time.Duration {
 		return initial + (increment * time.Duration(attempt))
 	}
 }
 
-// Linear TODO
+// Linear creates a BackoffAlgorithm that linearly multiplies the initial
+// duration by the attempt number for each attempt.
 func Linear() BackoffAlgorithm {
 	return func(initial time.Duration, attempt uint) time.Duration {
 		return (initial * time.Duration(attempt))
 	}
 }
 
-// Exponential TODO
+// Exponential creates a BackoffAlgorithm that multiplies the initial duration
+// by an exponentially increasing factor for each attempt, where the factor is
+// calculated as the given base raised to the attempt number.
 func Exponential(base float64) BackoffAlgorithm {
 	return func(initial time.Duration, attempt uint) time.Duration {
 		return (initial * time.Duration(math.Pow(base, float64(attempt))))
