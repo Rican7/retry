@@ -1,6 +1,7 @@
 package strategy
 
 import (
+	"fmt"
 	"math"
 	"testing"
 	"time"
@@ -78,5 +79,53 @@ func TestExponential(t *testing.T) {
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
 		}
+	}
+}
+
+func ExampleIncremental() {
+	algorithm := Incremental(10 * time.Millisecond)
+
+	for i := uint(1); i <= 5; i++ {
+		duration := algorithm(15 * time.Millisecond, i)
+
+		fmt.Printf("#%d attempt: %s\n", i, duration)
+		// Output:
+		// #1 attempt: 25ms
+		// #2 attempt: 35ms
+		// #3 attempt: 45ms
+		// #4 attempt: 55ms
+		// #5 attempt: 65ms
+	}
+}
+
+func ExampleLinear() {
+	algorithm := Linear()
+
+	for i := uint(1); i <= 5; i++ {
+		duration := algorithm(15 * time.Millisecond, i)
+
+		fmt.Printf("#%d attempt: %s\n", i, duration)
+		// Output:
+		// #1 attempt: 15ms
+		// #2 attempt: 30ms
+		// #3 attempt: 45ms
+		// #4 attempt: 60ms
+		// #5 attempt: 75ms
+	}
+}
+
+func ExampleExponential() {
+	algorithm := Exponential(2)
+
+	for i := uint(1); i <= 5; i++ {
+		duration := algorithm(15 * time.Millisecond, i)
+
+		fmt.Printf("#%d attempt: %s\n", i, duration)
+		// Output:
+		// #1 attempt: 30ms
+		// #2 attempt: 60ms
+		// #3 attempt: 120ms
+		// #4 attempt: 240ms
+		// #5 attempt: 480ms
 	}
 }
