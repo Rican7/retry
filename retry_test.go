@@ -2,9 +2,14 @@ package retry
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"testing"
+	"time"
+
+	"github.com/Rican7/retry/strategy"
 )
 
 func TestRetry(t *testing.T) {
@@ -144,5 +149,31 @@ func Example_fileOpen() {
 
 	if nil != err {
 		log.Fatalf("Unable to open file %q with error %q", logFilePath, err)
+	}
+}
+
+func Example_httpGetWithStrategies() {
+	var response *http.Response
+
+	action := func(attempt uint) error {
+		var err error
+
+		response, err = http.Get("https://api.github.com/repos/Rican7/retry")
+
+		if nil == err && response.StatusCode > 200 {
+			err = fmt.Errorf("failed to fetch with status code: %d", response.StatusCode)
+		}
+
+		return err
+	}
+
+	err := Retry(
+		action,
+		strategy.Limit(5),
+		strategy.Backoff(strategy.Fibonacci(10*time.Millisecond)),
+	)
+
+	if nil != err {
+		log.Fatalf("Failed to fetch repository with error %q", err)
 	}
 }
