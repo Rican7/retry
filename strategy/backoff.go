@@ -8,16 +8,16 @@ import (
 	"time"
 )
 
-// BackoffModifier (TODO: name?!) defines a function that calculates a
-// time.Duration based on a given retry attempt number.
-type BackoffModifier func(duration time.Duration, attempt uint) time.Duration
+// BackoffAlgorithm defines a function that calculates a time.Duration based on
+// a given duration and retry attempt number.
+type BackoffAlgorithm func(initial time.Duration, attempt uint) time.Duration
 
 // Backoff creates a Strategy that waits before each attempt, with an increasing
 // duration.
-func Backoff(initial time.Duration, modifier BackoffModifier) Strategy {
+func Backoff(initial time.Duration, algorithm BackoffAlgorithm) Strategy {
 	return func(attempt uint) bool {
 		if 0 < attempt {
-			time.Sleep(modifier(initial, attempt))
+			time.Sleep(algorithm(initial, attempt))
 		}
 
 		return true
@@ -25,22 +25,22 @@ func Backoff(initial time.Duration, modifier BackoffModifier) Strategy {
 }
 
 // Incremental TODO
-func Incremental(increment time.Duration) BackoffModifier {
-	return func(duration time.Duration, attempt uint) time.Duration {
-		return duration + (increment * time.Duration(attempt))
+func Incremental(increment time.Duration) BackoffAlgorithm {
+	return func(initial time.Duration, attempt uint) time.Duration {
+		return initial + (increment * time.Duration(attempt))
 	}
 }
 
 // Linear TODO
-func Linear() BackoffModifier {
-	return func(duration time.Duration, attempt uint) time.Duration {
-		return (duration * time.Duration(attempt))
+func Linear() BackoffAlgorithm {
+	return func(initial time.Duration, attempt uint) time.Duration {
+		return (initial * time.Duration(attempt))
 	}
 }
 
 // Exponential TODO
-func Exponential(base float64) BackoffModifier {
-	return func(duration time.Duration, attempt uint) time.Duration {
-		return (duration * time.Duration(math.Pow(base, float64(attempt))))
+func Exponential(base float64) BackoffAlgorithm {
+	return func(initial time.Duration, attempt uint) time.Duration {
+		return (initial * time.Duration(math.Pow(base, float64(attempt))))
 	}
 }
