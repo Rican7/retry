@@ -82,6 +82,34 @@ func TestExponential(t *testing.T) {
 	}
 }
 
+func TestFibonacci(t *testing.T) {
+	algorithm := Fibonacci()
+
+	duration := time.Millisecond
+
+	for i := uint(0); i < 10; i++ {
+		result := algorithm(duration, i)
+		expected := duration * time.Duration(fibonacciNumber(i))
+
+		if result != expected {
+			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
+		}
+	}
+}
+
+func TestFibonacciNumber(t *testing.T) {
+	// Fibonacci sequence
+	expectedSequence := []uint{0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233}
+
+	for i, expected := range expectedSequence {
+		result := fibonacciNumber(uint(i))
+
+		if result != expected {
+			t.Errorf("fibonacci %d number expected %d, but got %d", i, expected, result)
+		}
+	}
+}
+
 func ExampleIncremental() {
 	algorithm := Incremental(10 * time.Millisecond)
 
@@ -127,5 +155,21 @@ func ExampleExponential() {
 		// #3 attempt: 120ms
 		// #4 attempt: 240ms
 		// #5 attempt: 480ms
+	}
+}
+
+func ExampleFibonacci() {
+	algorithm := Fibonacci()
+
+	for i := uint(1); i <= 5; i++ {
+		duration := algorithm(15*time.Millisecond, i)
+
+		fmt.Printf("#%d attempt: %s\n", i, duration)
+		// Output:
+		// #1 attempt: 15ms
+		// #2 attempt: 15ms
+		// #3 attempt: 30ms
+		// #4 attempt: 45ms
+		// #5 attempt: 75ms
 	}
 }
