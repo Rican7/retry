@@ -18,7 +18,11 @@ func TestLimit(t *testing.T) {
 		t.Error("strategy expected to return true")
 	}
 
-	if strategy(3) {
+	if !strategy(3) {
+		t.Error("strategy expected to return true")
+	}
+
+	if strategy(4) {
 		t.Error("strategy expected to return false")
 	}
 }
