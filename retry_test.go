@@ -160,8 +160,8 @@ func Example_httpGetWithStrategies() {
 
 		response, err = http.Get("https://api.github.com/repos/Rican7/retry")
 
-		if nil == err && response.StatusCode > 200 {
-			err = fmt.Errorf("failed to fetch with status code: %d", response.StatusCode)
+		if nil == err && nil != response && response.StatusCode > 200 {
+			err = fmt.Errorf("failed to fetch (attempt #%d) with status code: %d", attempt, response.StatusCode)
 		}
 
 		return err
