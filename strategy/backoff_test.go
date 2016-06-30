@@ -11,11 +11,11 @@ func TestBackoff(t *testing.T) {
 	const backoffDuration = time.Duration(10 * time.Millisecond)
 	const algorithmDurationBase = time.Millisecond
 
-	algorithm := func(duration time.Duration, attempt uint) time.Duration {
-		return duration - (algorithmDurationBase * time.Duration(attempt))
+	algorithm := func(attempt uint) time.Duration {
+		return backoffDuration - (algorithmDurationBase * time.Duration(attempt))
 	}
 
-	strategy := Backoff(backoffDuration, algorithm)
+	strategy := Backoff(algorithm)
 
 	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
 		t.Error("strategy expected to return true in 0 time")
@@ -34,14 +34,13 @@ func TestBackoff(t *testing.T) {
 }
 
 func TestIncremental(t *testing.T) {
+	const duration = time.Millisecond
 	const increment = time.Nanosecond
 
-	algorithm := Incremental(increment)
-
-	duration := time.Millisecond
+	algorithm := Incremental(duration, increment)
 
 	for i := uint(0); i < 10; i++ {
-		result := algorithm(duration, i)
+		result := algorithm(i)
 		expected := duration + (increment * time.Duration(i))
 
 		if result != expected {
@@ -51,12 +50,12 @@ func TestIncremental(t *testing.T) {
 }
 
 func TestLinear(t *testing.T) {
-	algorithm := Linear()
+	const duration = time.Millisecond
 
-	duration := time.Millisecond
+	algorithm := Linear(duration)
 
 	for i := uint(0); i < 10; i++ {
-		result := algorithm(duration, i)
+		result := algorithm(i)
 		expected := duration * time.Duration(i)
 
 		if result != expected {
@@ -66,14 +65,13 @@ func TestLinear(t *testing.T) {
 }
 
 func TestExponential(t *testing.T) {
+	const duration = time.Second
 	const base = 2
 
-	algorithm := Exponential(base)
-
-	duration := time.Second
+	algorithm := Exponential(duration, base)
 
 	for i := uint(0); i < 10; i++ {
-		result := algorithm(duration, i)
+		result := algorithm(i)
 		expected := duration * time.Duration(math.Pow(base, float64(i)))
 
 		if result != expected {
@@ -83,12 +81,12 @@ func TestExponential(t *testing.T) {
 }
 
 func TestFibonacci(t *testing.T) {
-	algorithm := Fibonacci()
+	const duration = time.Millisecond
 
-	duration := time.Millisecond
+	algorithm := Fibonacci(duration)
 
 	for i := uint(0); i < 10; i++ {
-		result := algorithm(duration, i)
+		result := algorithm(i)
 		expected := duration * time.Duration(fibonacciNumber(i))
 
 		if result != expected {
@@ -111,10 +109,10 @@ func TestFibonacciNumber(t *testing.T) {
 }
 
 func ExampleIncremental() {
-	algorithm := Incremental(10 * time.Millisecond)
+	algorithm := Incremental(15*time.Millisecond, 10*time.Millisecond)
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15*time.Millisecond, i)
+		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
@@ -127,10 +125,10 @@ func ExampleIncremental() {
 }
 
 func ExampleLinear() {
-	algorithm := Linear()
+	algorithm := Linear(15 * time.Millisecond)
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15*time.Millisecond, i)
+		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
@@ -143,10 +141,10 @@ func ExampleLinear() {
 }
 
 func ExampleExponential() {
-	algorithm := Exponential(2)
+	algorithm := Exponential(15*time.Millisecond, 2)
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15*time.Millisecond, i)
+		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
@@ -159,10 +157,10 @@ func ExampleExponential() {
 }
 
 func ExampleFibonacci() {
-	algorithm := Fibonacci()
+	algorithm := Fibonacci(15 * time.Millisecond)
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15*time.Millisecond, i)
+		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
