@@ -86,7 +86,7 @@ func ExampleIncremental() {
 	algorithm := Incremental(10 * time.Millisecond)
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15 * time.Millisecond, i)
+		duration := algorithm(15*time.Millisecond, i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
@@ -102,7 +102,7 @@ func ExampleLinear() {
 	algorithm := Linear()
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15 * time.Millisecond, i)
+		duration := algorithm(15*time.Millisecond, i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
@@ -118,7 +118,7 @@ func ExampleExponential() {
 	algorithm := Exponential(2)
 
 	for i := uint(1); i <= 5; i++ {
-		duration := algorithm(15 * time.Millisecond, i)
+		duration := algorithm(15*time.Millisecond, i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
 		// Output:
