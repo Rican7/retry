@@ -49,6 +49,13 @@ func Exponential(factor time.Duration, base float64) BackoffAlgorithm {
 	}
 }
 
+// BinaryExponential creates a BackoffAlgorithm that multiplies the factor
+// duration by an exponentially increasing factor for each attempt, where the
+// factor is calculated as `2` raised to the attempt number (2^attempt).
+func BinaryExponential(factor time.Duration) BackoffAlgorithm {
+	return Exponential(factor, 2)
+}
+
 // Fibonacci creates a BackoffAlgorithm that multiplies the factor duration by
 // an increasing factor for each attempt, where the factor is the Nth number in
 // the Fibonacci sequence.
