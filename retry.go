@@ -1,5 +1,5 @@
-// Package retry provides a simple, stateless mechanism to perform actions
-// repetitively until successful.
+// Package retry provides a simple, stateless, functional mechanism to perform
+// actions repetitively until successful.
 //
 // Copyright © 2016 Trevor N. Suarez (Rican7)
 package retry

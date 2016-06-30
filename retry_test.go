@@ -128,7 +128,7 @@ func TestShouldAttemptWithMultipleStrategies(t *testing.T) {
 	}
 }
 
-func Example_simple() {
+func Example() {
 	Retry(func(attempt uint) error {
 		return nil // Do something that may or may not cause an error
 	})
