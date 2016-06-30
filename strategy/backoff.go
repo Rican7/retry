@@ -48,3 +48,24 @@ func Exponential(base float64) BackoffAlgorithm {
 		return (factor * time.Duration(math.Pow(base, float64(attempt))))
 	}
 }
+
+// Fibonacci creates a BackoffAlgorithm that multiplies the factor duration by
+// an increasing factor for each attempt, where the factor is the Nth number in
+// the Fibonacci sequence.
+func Fibonacci() BackoffAlgorithm {
+	return func(factor time.Duration, attempt uint) time.Duration {
+		return (factor * time.Duration(fibonacciNumber(attempt)))
+	}
+}
+
+// fibonacciNumber calculates the Fibonacci sequence number for the given
+// sequence position.
+func fibonacciNumber(n uint) uint {
+	if 0 == n {
+		return 0
+	} else if 1 == n {
+		return 1
+	} else {
+		return fibonacciNumber(n-1) + fibonacciNumber(n-2)
+	}
+}
