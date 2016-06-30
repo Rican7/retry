@@ -9,33 +9,33 @@ import (
 )
 
 // BackoffAlgorithm defines a function that calculates a time.Duration based on
-// a given duration and retry attempt number.
-type BackoffAlgorithm func(factor time.Duration, attempt uint) time.Duration
+// the given retry attempt number.
+type BackoffAlgorithm func(attempt uint) time.Duration
 
 // Backoff creates a Strategy that waits before each attempt, with a duration as
-// defined by the given factor duration and BackoffAlgorithm.
-func Backoff(factor time.Duration, algorithm BackoffAlgorithm) Strategy {
+// defined by the given BackoffAlgorithm.
+func Backoff(algorithm BackoffAlgorithm) Strategy {
 	return func(attempt uint) bool {
 		if 0 < attempt {
-			time.Sleep(algorithm(factor, attempt))
+			time.Sleep(algorithm(attempt))
 		}
 
 		return true
 	}
 }
 
-// Incremental creates a BackoffAlgorithm that increments the factor duration by
-// the given increment for each attempt.
-func Incremental(increment time.Duration) BackoffAlgorithm {
-	return func(factor time.Duration, attempt uint) time.Duration {
-		return factor + (increment * time.Duration(attempt))
+// Incremental creates a BackoffAlgorithm that increments the initial duration
+// by the given increment for each attempt.
+func Incremental(initial, increment time.Duration) BackoffAlgorithm {
+	return func(attempt uint) time.Duration {
+		return initial + (increment * time.Duration(attempt))
 	}
 }
 
 // Linear creates a BackoffAlgorithm that linearly multiplies the factor
 // duration by the attempt number for each attempt.
-func Linear() BackoffAlgorithm {
-	return func(factor time.Duration, attempt uint) time.Duration {
+func Linear(factor time.Duration) BackoffAlgorithm {
+	return func(attempt uint) time.Duration {
 		return (factor * time.Duration(attempt))
 	}
 }
@@ -43,8 +43,8 @@ func Linear() BackoffAlgorithm {
 // Exponential creates a BackoffAlgorithm that multiplies the factor duration by
 // an exponentially increasing factor for each attempt, where the factor is
 // calculated as the given base raised to the attempt number.
-func Exponential(base float64) BackoffAlgorithm {
-	return func(factor time.Duration, attempt uint) time.Duration {
+func Exponential(factor time.Duration, base float64) BackoffAlgorithm {
+	return func(attempt uint) time.Duration {
 		return (factor * time.Duration(math.Pow(base, float64(attempt))))
 	}
 }
@@ -52,8 +52,8 @@ func Exponential(base float64) BackoffAlgorithm {
 // Fibonacci creates a BackoffAlgorithm that multiplies the factor duration by
 // an increasing factor for each attempt, where the factor is the Nth number in
 // the Fibonacci sequence.
-func Fibonacci() BackoffAlgorithm {
-	return func(factor time.Duration, attempt uint) time.Duration {
+func Fibonacci(factor time.Duration) BackoffAlgorithm {
+	return func(attempt uint) time.Duration {
 		return (factor * time.Duration(fibonacciNumber(attempt)))
 	}
 }
