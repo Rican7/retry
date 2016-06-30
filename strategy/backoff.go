@@ -24,8 +24,8 @@ func Backoff(factor time.Duration, algorithm BackoffAlgorithm) Strategy {
 	}
 }
 
-// Incremental creates a BackoffAlgorithm that increments the factor duration
-// by the given increment for each attempt.
+// Incremental creates a BackoffAlgorithm that increments the factor duration by
+// the given increment for each attempt.
 func Incremental(increment time.Duration) BackoffAlgorithm {
 	return func(factor time.Duration, attempt uint) time.Duration {
 		return factor + (increment * time.Duration(attempt))
@@ -40,8 +40,8 @@ func Linear() BackoffAlgorithm {
 	}
 }
 
-// Exponential creates a BackoffAlgorithm that multiplies the factor duration
-// by an exponentially increasing factor for each attempt, where the factor is
+// Exponential creates a BackoffAlgorithm that multiplies the factor duration by
+// an exponentially increasing factor for each attempt, where the factor is
 // calculated as the given base raised to the attempt number.
 func Exponential(base float64) BackoffAlgorithm {
 	return func(factor time.Duration, attempt uint) time.Duration {
