@@ -12,6 +12,8 @@ A simple, stateless, functional mechanism to perform actions repetitively until 
 ## TODO
 
 - [ ] Backoff "jitter"
-- [ ] Makefile
-- [ ] Travis-CI integration
+- [x] Makefile
+- [x] Travis-CI integration
 - [ ] `doc.go` files in each package (for consolidated documentation)
+- [ ] License file
+- [ ] Fixup the README? Examples?
