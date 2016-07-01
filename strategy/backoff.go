@@ -12,12 +12,22 @@ import (
 // the given retry attempt number.
 type BackoffAlgorithm func(attempt uint) time.Duration
 
+// JitterTransformation defines a function that calculates a time.Duration based
+// on the given duration.
+type JitterTransformation func(duration time.Duration) time.Duration
+
 // Backoff creates a Strategy that waits before each attempt, with a duration as
 // defined by the given BackoffAlgorithm.
 func Backoff(algorithm BackoffAlgorithm) Strategy {
+	return BackoffWithJitter(algorithm, none())
+}
+
+// BackoffWithJitter creates a Strategy that waits before each attempt, with a
+// duration as defined by the given BackoffAlgorithm and JitterTransformation.
+func BackoffWithJitter(algorithm BackoffAlgorithm, transformation JitterTransformation) Strategy {
 	return func(attempt uint) bool {
 		if 0 < attempt {
-			time.Sleep(algorithm(attempt))
+			time.Sleep(transformation(algorithm(attempt)))
 		}
 
 		return true
@@ -62,6 +72,13 @@ func BinaryExponential(factor time.Duration) BackoffAlgorithm {
 func Fibonacci(factor time.Duration) BackoffAlgorithm {
 	return func(attempt uint) time.Duration {
 		return (factor * time.Duration(fibonacciNumber(attempt)))
+	}
+}
+
+// none creates a JitterTransformation that simply returns the input.
+func none() JitterTransformation {
+	return func(duration time.Duration) time.Duration {
+		return duration
 	}
 }
 
