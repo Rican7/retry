@@ -42,7 +42,7 @@ func TestBackoffWithJitter(t *testing.T) {
 	}
 
 	transformation := func(duration time.Duration) time.Duration {
-		return duration - time.Duration(10 * time.Millisecond)
+		return duration - time.Duration(10*time.Millisecond)
 	}
 
 	strategy := BackoffWithJitter(algorithm, transformation)
