@@ -5,6 +5,7 @@ package strategy
 
 import (
 	"math"
+	"math/rand"
 	"time"
 )
 
@@ -75,6 +76,20 @@ func Fibonacci(factor time.Duration) BackoffAlgorithm {
 	}
 }
 
+// FullRandom creates a JitterTransformation that transforms a duration into a
+// result duration in [0, n), where n is the given duration.
+//
+// The given generator is what is used to determine the random transformation.
+//
+// Inspired by https://www.awsarchitectureblog.com/2015/03/backoff.html
+func FullRandom(generator *rand.Rand) JitterTransformation {
+	random := fallbackNewRandom(generator)
+
+	return func(duration time.Duration) time.Duration {
+		return time.Duration(random.Int63n(int64(duration)))
+	}
+}
+
 // none creates a JitterTransformation that simply returns the input.
 func none() JitterTransformation {
 	return func(duration time.Duration) time.Duration {
@@ -92,4 +107,17 @@ func fibonacciNumber(n uint) uint {
 	} else {
 		return fibonacciNumber(n-1) + fibonacciNumber(n-2)
 	}
+}
+
+// fallbackNewRandom returns the passed in random instance if it's not nil,
+// and otherwise returns a new random instance seeded with the current time.
+func fallbackNewRandom(random *rand.Rand) *rand.Rand {
+	// Return the passed in value if it's already not null
+	if nil != random {
+		return random
+	}
+
+	seed := time.Now().UnixNano()
+
+	return rand.New(rand.NewSource(seed))
 }
