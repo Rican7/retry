@@ -4,12 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/Rican7/retry/backoff"
+	"github.com/Rican7/retry/jitter"
 	"github.com/Rican7/retry/strategy"
 )
 
@@ -177,4 +179,22 @@ func Example_httpGetWithStrategies() {
 	if nil != err {
 		log.Fatalf("Failed to fetch repository with error %q", err)
 	}
+}
+
+func Example_withBackoffJitter() {
+	action := func(attempt uint) error {
+		return errors.New("something happened")
+	}
+
+	seed := time.Now().UnixNano()
+	random := rand.New(rand.NewSource(seed))
+
+	Retry(
+		action,
+		strategy.Limit(5),
+		strategy.BackoffWithJitter(
+			backoff.BinaryExponential(10*time.Millisecond),
+			jitter.Deviation(random, 0.5),
+		),
+	)
 }
