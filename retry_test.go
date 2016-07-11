@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Rican7/retry/backoff"
 	"github.com/Rican7/retry/strategy"
 )
 
@@ -170,7 +171,7 @@ func Example_httpGetWithStrategies() {
 	err := Retry(
 		action,
 		strategy.Limit(5),
-		strategy.Backoff(strategy.Fibonacci(10*time.Millisecond)),
+		strategy.Backoff(backoff.Fibonacci(10*time.Millisecond)),
 	)
 
 	if nil != err {

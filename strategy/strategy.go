@@ -5,6 +5,9 @@ package strategy
 
 import (
 	"time"
+
+	"github.com/Rican7/retry/backoff"
+	"github.com/Rican7/retry/jitter"
 )
 
 // Strategy defines a function that Retry calls before every successive attempt
@@ -53,5 +56,30 @@ func Wait(durations ...time.Duration) Strategy {
 		}
 
 		return true
+	}
+}
+
+// Backoff creates a Strategy that waits before each attempt, with a duration as
+// defined by the given backoff.Algorithm.
+func Backoff(algorithm backoff.Algorithm) Strategy {
+	return BackoffWithJitter(algorithm, noJitter())
+}
+
+// BackoffWithJitter creates a Strategy that waits before each attempt, with a
+// duration as defined by the given backoff.Algorithm and jitter.Transformation.
+func BackoffWithJitter(algorithm backoff.Algorithm, transformation jitter.Transformation) Strategy {
+	return func(attempt uint) bool {
+		if 0 < attempt {
+			time.Sleep(transformation(algorithm(attempt)))
+		}
+
+		return true
+	}
+}
+
+// noJitter creates a jitter.Transformation that simply returns the input.
+func noJitter() jitter.Transformation {
+	return func(duration time.Duration) time.Duration {
+		return duration
 	}
 }

@@ -108,3 +108,73 @@ func TestWaitWithMultipleDurations(t *testing.T) {
 		)
 	}
 }
+
+func TestBackoff(t *testing.T) {
+	const backoffDuration = time.Duration(10 * time.Millisecond)
+	const algorithmDurationBase = time.Millisecond
+
+	algorithm := func(attempt uint) time.Duration {
+		return backoffDuration - (algorithmDurationBase * time.Duration(attempt))
+	}
+
+	strategy := Backoff(algorithm)
+
+	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
+		t.Error("strategy expected to return true in 0 time")
+	}
+
+	for i := uint(1); i < 10; i++ {
+		expectedResult := algorithm(i)
+
+		if now := time.Now(); !strategy(i) || expectedResult > time.Since(now) {
+			t.Errorf(
+				"strategy expected to return true in %s",
+				expectedResult,
+			)
+		}
+	}
+}
+
+func TestBackoffWithJitter(t *testing.T) {
+	const backoffDuration = time.Duration(10 * time.Millisecond)
+	const algorithmDurationBase = time.Millisecond
+
+	algorithm := func(attempt uint) time.Duration {
+		return backoffDuration - (algorithmDurationBase * time.Duration(attempt))
+	}
+
+	transformation := func(duration time.Duration) time.Duration {
+		return duration - time.Duration(10*time.Millisecond)
+	}
+
+	strategy := BackoffWithJitter(algorithm, transformation)
+
+	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
+		t.Error("strategy expected to return true in 0 time")
+	}
+
+	for i := uint(1); i < 10; i++ {
+		expectedResult := transformation(algorithm(i))
+
+		if now := time.Now(); !strategy(i) || expectedResult > time.Since(now) {
+			t.Errorf(
+				"strategy expected to return true in %s",
+				expectedResult,
+			)
+		}
+	}
+}
+
+func TestNoJitter(t *testing.T) {
+	transformation := noJitter()
+
+	for i := uint(0); i < 10; i++ {
+		duration := time.Duration(i) * time.Millisecond
+		result := transformation(duration)
+		expected := duration
+
+		if result != expected {
+			t.Errorf("transformation expected to return a %s duration, but received %s instead", expected, result)
+		}
+	}
+}
