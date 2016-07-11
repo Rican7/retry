@@ -13,14 +13,14 @@ import (
 // the given duration.
 type Transformation func(duration time.Duration) time.Duration
 
-// FullRandom creates a Transformation that transforms a duration into a result
+// Full creates a Transformation that transforms a duration into a result
 // duration in [0, n) randomly, where n is the given duration.
 //
 // The given generator is what is used to determine the random transformation.
 // If a nil generator is passed, a default one will be provided.
 //
 // Inspired by https://www.awsarchitectureblog.com/2015/03/backoff.html
-func FullRandom(generator *rand.Rand) Transformation {
+func Full(generator *rand.Rand) Transformation {
 	random := fallbackNewRandom(generator)
 
 	return func(duration time.Duration) time.Duration {
@@ -28,14 +28,14 @@ func FullRandom(generator *rand.Rand) Transformation {
 	}
 }
 
-// EqualRandom creates a Transformation that transforms a duration into a result
+// Equal creates a Transformation that transforms a duration into a result
 // duration in [n/2, n) randomly, where n is the given duration.
 //
 // The given generator is what is used to determine the random transformation.
 // If a nil generator is passed, a default one will be provided.
 //
 // Inspired by https://www.awsarchitectureblog.com/2015/03/backoff.html
-func EqualRandom(generator *rand.Rand) Transformation {
+func Equal(generator *rand.Rand) Transformation {
 	random := fallbackNewRandom(generator)
 
 	return func(duration time.Duration) time.Duration {
