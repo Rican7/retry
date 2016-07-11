@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+// timeMarginOfError represents the acceptable amount of time that may pass for
+// a time-based (sleep) unit before considering invalid.
+const timeMarginOfError = time.Millisecond
+
 func TestLimit(t *testing.T) {
 	const attemptLimit = 3
 
@@ -28,7 +32,7 @@ func TestLimit(t *testing.T) {
 }
 
 func TestDelay(t *testing.T) {
-	const delayDuration = time.Duration(10 * time.Millisecond)
+	const delayDuration = time.Duration(10 * timeMarginOfError)
 
 	strategy := Delay(delayDuration)
 
@@ -39,30 +43,30 @@ func TestDelay(t *testing.T) {
 		)
 	}
 
-	if now := time.Now(); !strategy(5) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(5) || (delayDuration/10) < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 }
 
 func TestWait(t *testing.T) {
 	strategy := Wait()
 
-	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(0) || timeMarginOfError < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 
-	if now := time.Now(); !strategy(999) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(999) || timeMarginOfError < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 }
 
 func TestWaitWithDuration(t *testing.T) {
-	const waitDuration = time.Duration(10 * time.Millisecond)
+	const waitDuration = time.Duration(10 * timeMarginOfError)
 
 	strategy := Wait(waitDuration)
 
-	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(0) || timeMarginOfError < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 
 	if now := time.Now(); !strategy(1) || waitDuration > time.Since(now) {
@@ -75,16 +79,16 @@ func TestWaitWithDuration(t *testing.T) {
 
 func TestWaitWithMultipleDurations(t *testing.T) {
 	waitDurations := []time.Duration{
-		time.Duration(10 * time.Millisecond),
-		time.Duration(20 * time.Millisecond),
-		time.Duration(30 * time.Millisecond),
-		time.Duration(40 * time.Millisecond),
+		time.Duration(10 * timeMarginOfError),
+		time.Duration(20 * timeMarginOfError),
+		time.Duration(30 * timeMarginOfError),
+		time.Duration(40 * timeMarginOfError),
 	}
 
 	strategy := Wait(waitDurations...)
 
-	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(0) || timeMarginOfError < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 
 	if now := time.Now(); !strategy(1) || waitDurations[0] > time.Since(now) {
@@ -110,8 +114,8 @@ func TestWaitWithMultipleDurations(t *testing.T) {
 }
 
 func TestBackoff(t *testing.T) {
-	const backoffDuration = time.Duration(10 * time.Millisecond)
-	const algorithmDurationBase = time.Millisecond
+	const backoffDuration = time.Duration(10 * timeMarginOfError)
+	const algorithmDurationBase = timeMarginOfError
 
 	algorithm := func(attempt uint) time.Duration {
 		return backoffDuration - (algorithmDurationBase * time.Duration(attempt))
@@ -119,8 +123,8 @@ func TestBackoff(t *testing.T) {
 
 	strategy := Backoff(algorithm)
 
-	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(0) || timeMarginOfError < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 
 	for i := uint(1); i < 10; i++ {
@@ -136,21 +140,21 @@ func TestBackoff(t *testing.T) {
 }
 
 func TestBackoffWithJitter(t *testing.T) {
-	const backoffDuration = time.Duration(10 * time.Millisecond)
-	const algorithmDurationBase = time.Millisecond
+	const backoffDuration = time.Duration(10 * timeMarginOfError)
+	const algorithmDurationBase = timeMarginOfError
 
 	algorithm := func(attempt uint) time.Duration {
 		return backoffDuration - (algorithmDurationBase * time.Duration(attempt))
 	}
 
 	transformation := func(duration time.Duration) time.Duration {
-		return duration - time.Duration(10*time.Millisecond)
+		return duration - time.Duration(10*timeMarginOfError)
 	}
 
 	strategy := BackoffWithJitter(algorithm, transformation)
 
-	if now := time.Now(); !strategy(0) || 0 != time.Since(now) {
-		t.Error("strategy expected to return true in 0 time")
+	if now := time.Now(); !strategy(0) || timeMarginOfError < time.Since(now) {
+		t.Error("strategy expected to return true in ~0 time")
 	}
 
 	for i := uint(1); i < 10; i++ {
@@ -169,7 +173,7 @@ func TestNoJitter(t *testing.T) {
 	transformation := noJitter()
 
 	for i := uint(0); i < 10; i++ {
-		duration := time.Duration(i) * time.Millisecond
+		duration := time.Duration(i) * timeMarginOfError
 		result := transformation(duration)
 		expected := duration
 
