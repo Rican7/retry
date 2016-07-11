@@ -16,6 +16,7 @@ type Transformation func(duration time.Duration) time.Duration
 // result duration in [0, n), where n is the given duration.
 //
 // The given generator is what is used to determine the random transformation.
+// If a nil generator is passed, a default one will be provided.
 //
 // Inspired by https://www.awsarchitectureblog.com/2015/03/backoff.html
 func FullRandom(generator *rand.Rand) Transformation {
