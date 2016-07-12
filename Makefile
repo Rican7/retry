@@ -80,4 +80,4 @@ vet:
 	go vet ./...
 
 
-.PHONY: all clean build install install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted format-lint import-lint style-lint copyright-lint lint format-fix import-fix copyright-fix vet
+.PHONY: all clean build install install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint copyright-lint lint format-fix import-fix copyright-fix vet
