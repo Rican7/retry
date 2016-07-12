@@ -6,6 +6,10 @@ go:
 
 sudo: false
 
+before_install:
+    # Install tools necessary to report code-coverage to Coveralls.io
+    - go get github.com/mattn/goveralls
+
 install:
     # Get all imported packages
     - make install-deps install-deps-dev
@@ -21,6 +25,10 @@ script:
 
     # Run tests
     - make test
+
+after_success:
+    # Report our code-coverage to Coveralls.io
+    - goveralls -service=travis-ci
 
 matrix:
     allow_failures:
