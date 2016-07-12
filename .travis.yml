@@ -9,7 +9,6 @@ sudo: false
 before_install:
     # Install tools necessary to report code-coverage to Coveralls.io
     - go get github.com/mattn/goveralls
-    - go get golang.org/x/tools/cmd/cover
 
 install:
     # Get all imported packages
