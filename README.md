@@ -25,7 +25,7 @@ Vendor (commit or lock) this dependency if you plan on using it.
 ### Basic
 
 ```go
-Retry(func(attempt uint) error {
+retry.Retry(func(attempt uint) error {
 	return nil // Do something that may or may not cause an error
 })
 ```
@@ -37,7 +37,7 @@ const logFilePath = "/var/log/myapp.log"
 
 var logFile *os.File
 
-err := Retry(func(attempt uint) error {
+err := retry.Retry(func(attempt uint) error {
 	var err error
 
 	logFile, err = os.Open(logFilePath)
@@ -48,6 +48,8 @@ err := Retry(func(attempt uint) error {
 if nil != err {
 	log.Fatalf("Unable to open file %q with error %q", logFilePath, err)
 }
+
+logFile.Chdir() // Do something with the file
 ```
 
 ### HTTP request with strategies and backoff
@@ -67,7 +69,7 @@ action := func(attempt uint) error {
 	return err
 }
 
-err := Retry(
+err := retry.Retry(
 	action,
 	strategy.Limit(5),
 	strategy.Backoff(backoff.Fibonacci(10*time.Millisecond)),
@@ -88,7 +90,7 @@ action := func(attempt uint) error {
 seed := time.Now().UnixNano()
 random := rand.New(rand.NewSource(seed))
 
-Retry(
+retry.Retry(
 	action,
 	strategy.Limit(5),
 	strategy.BackoffWithJitter(
