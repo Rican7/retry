@@ -26,11 +26,17 @@ func Retry(action Action, strategies ...strategy.Strategy) error {
 // shouldAttempt evaluates the provided strategies with the given attempt to
 // determine if the Retry loop should make another attempt.
 func shouldAttempt(attempt uint, strategies ...strategy.Strategy) bool {
-	shouldAttempt := true
+	if len(strategies) > 0 {
+		// if strategy list isn't empty then processed them as usual
+		shouldAttempt := true
 
-	for i := 0; shouldAttempt && i < len(strategies); i++ {
-		shouldAttempt = shouldAttempt && strategies[i](attempt)
+		for i := 0; shouldAttempt && i < len(strategies); i++ {
+			shouldAttempt = shouldAttempt && strategies[i](attempt)
+		}
+
+		return shouldAttempt
+	} else {
+		// run action only one time
+		return attempt == 0
 	}
-
-	return shouldAttempt
 }
