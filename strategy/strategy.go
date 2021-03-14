@@ -18,22 +18,22 @@ import (
 // The strategy will be passed an "attempt" number on each successive retry
 // iteration, starting with a `0` value before the first attempt is actually
 // made. This allows for a pre-action delay, etc.
-type Strategy func(attempt uint) bool
+type Strategy func(attempt uint, sleep func(time.Duration)) bool
 
 // Limit creates a Strategy that limits the number of attempts that Retry will
 // make.
 func Limit(attemptLimit uint) Strategy {
-	return func(attempt uint) bool {
-		return (attempt <= attemptLimit)
+	return func(attempt uint, sleep func(time.Duration)) bool {
+		return attempt <= attemptLimit
 	}
 }
 
 // Delay creates a Strategy that waits the given duration before the first
 // attempt is made.
 func Delay(duration time.Duration) Strategy {
-	return func(attempt uint) bool {
+	return func(attempt uint, sleep func(time.Duration)) bool {
 		if 0 == attempt {
-			time.Sleep(duration)
+			sleep(duration)
 		}
 
 		return true
@@ -44,7 +44,7 @@ func Delay(duration time.Duration) Strategy {
 // the first. If the number of attempts is greater than the number of durations
 // provided, then the strategy uses the last duration provided.
 func Wait(durations ...time.Duration) Strategy {
-	return func(attempt uint) bool {
+	return func(attempt uint, sleep func(time.Duration)) bool {
 		if 0 < attempt && 0 < len(durations) {
 			durationIndex := int(attempt - 1)
 
@@ -52,7 +52,7 @@ func Wait(durations ...time.Duration) Strategy {
 				durationIndex = len(durations) - 1
 			}
 
-			time.Sleep(durations[durationIndex])
+			sleep(durations[durationIndex])
 		}
 
 		return true
@@ -68,9 +68,9 @@ func Backoff(algorithm backoff.Algorithm) Strategy {
 // BackoffWithJitter creates a Strategy that waits before each attempt, with a
 // duration as defined by the given backoff.Algorithm and jitter.Transformation.
 func BackoffWithJitter(algorithm backoff.Algorithm, transformation jitter.Transformation) Strategy {
-	return func(attempt uint) bool {
+	return func(attempt uint, sleep func(time.Duration)) bool {
 		if 0 < attempt {
-			time.Sleep(transformation(algorithm(attempt)))
+			sleep(transformation(algorithm(attempt)))
 		}
 
 		return true

@@ -55,12 +55,13 @@ logFile.Chdir() // Do something with the file
 ### HTTP request with strategies and backoff
 
 ```go
-var response *http.Response
+action := func(ctx context.Context, attempt uint) error {
+	var response *http.Response
 
-action := func(attempt uint) error {
-	var err error
-
-	response, err = http.Get("https://api.github.com/repos/Rican7/retry")
+	req, err := NewRequestWithContext(ctx, "GET", "https://api.github.com/repos/Rican7/retry", nil)
+	if err == nil {
+		response, err = c.Do(req)
+	}
 
 	if nil == err && nil != response && response.StatusCode > 200 {
 		err = fmt.Errorf("failed to fetch (attempt #%d) with status code: %d", attempt, response.StatusCode)
@@ -69,7 +70,8 @@ action := func(attempt uint) error {
 	return err
 }
 
-err := retry.Retry(
+err := retry.RetryWithContext(
+	context.TODO(),
 	action,
 	strategy.Limit(5),
 	strategy.Backoff(backoff.Fibonacci(10*time.Millisecond)),
