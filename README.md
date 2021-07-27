@@ -12,7 +12,7 @@ A simple, stateless, functional mechanism to perform actions repetitively until 
 ## Project Status
 
 This project is currently in "pre-release". While the code is heavily tested, the API may change.
-Vendor (commit or lock) this dependency if you plan on using it.
+Use a tagged version or vendor this dependency if you plan on using it.
 
 
 ## Examples
