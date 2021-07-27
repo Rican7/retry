@@ -1,6 +1,3 @@
-# Define some VCS context
-PARENT_BRANCH ?= master
-
 # Set the mode for code-coverage
 GO_TEST_COVERAGE_MODE ?= count
 GO_TEST_COVERAGE_FILE_NAME ?= coverage.out
@@ -12,7 +9,7 @@ GOFMT_FLAGS ?= -s
 GOLINT_MIN_CONFIDENCE ?= 0.3
 
 
-all: install-deps build install
+all: build
 
 clean:
 	go clean -i -x ./...
@@ -20,11 +17,8 @@ clean:
 build:
 	go build -v ./...
 
-install:
-	go install ./...
-
 install-deps:
-	go get -d -t ./...
+	go mod download
 
 install-deps-dev: install-deps
 	go get golang.org/x/lint/golint
@@ -74,4 +68,4 @@ vet:
 	go vet ./...
 
 
-.PHONY: all clean build install install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet
+.PHONY: all clean build install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet
