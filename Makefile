@@ -62,10 +62,7 @@ import-lint:
 style-lint:
 	errors=$$(golint -min_confidence=${GOLINT_MIN_CONFIDENCE} ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
-copyright-lint:
-	@old_dates=$$(git diff --diff-filter=ACMRTUXB --name-only "${PARENT_BRANCH}" | xargs grep -E '[Cc]opyright(\s+)[©Cc]?(\s+)[0-9]{4}' | grep -E -v "[Cc]opyright(\s+)[©Cc]?(\s+)$$(date '+%Y')"); if [ "$${old_dates}" != "" ]; then printf "The following files contain outdated copyrights:\n$${old_dates}\n\nThis can be fixed with 'make copyright-fix'\n"; exit 1; fi
-
-lint: install-deps-dev format-lint import-lint style-lint copyright-lint
+lint: install-deps-dev format-lint import-lint style-lint
 
 format-fix:
 	gofmt -w ${GOFMT_FLAGS} .
@@ -73,11 +70,8 @@ format-fix:
 import-fix:
 	goimports -w .
 
-copyright-fix:
-	@git diff --diff-filter=ACMRTUXB --name-only "${PARENT_BRANCH}" | xargs -I '_FILENAME' -- sh -c 'sed -i.bak "s/\([Cc]opyright\([[:space:]][©Cc]\{0,1\}[[:space:]]*\)\)[0-9]\{4\}/\1"$$(date '+%Y')"/g" _FILENAME && rm _FILENAME.bak'
-
 vet:
 	go vet ./...
 
 
-.PHONY: all clean build install install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint copyright-lint lint format-fix import-fix copyright-fix vet
+.PHONY: all clean build install install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet
