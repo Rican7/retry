@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/Rican7/retry.svg?branch=master)](https://travis-ci.org/Rican7/retry)
 [![Coverage Status](https://coveralls.io/repos/github/Rican7/retry/badge.svg)](https://coveralls.io/github/Rican7/retry)
 [![Go Report Card](https://goreportcard.com/badge/Rican7/retry)](http://goreportcard.com/report/Rican7/retry)
-[![GoDoc](https://godoc.org/github.com/Rican7/retry?status.png)](https://godoc.org/github.com/Rican7/retry)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Rican7/retry.svg)](https://pkg.go.dev/github.com/Rican7/retry)
 [![Latest Stable Version](https://img.shields.io/github/release/Rican7/retry.svg?style=flat)](https://github.com/Rican7/retry/releases)
 
 A simple, stateless, functional mechanism to perform actions repetitively until successful.
@@ -13,11 +13,6 @@ A simple, stateless, functional mechanism to perform actions repetitively until 
 
 This project is currently in "pre-release". While the code is heavily tested, the API may change.
 Vendor (commit or lock) this dependency if you plan on using it.
-
-
-## Install
-
-`go get github.com/Rican7/retry`
 
 
 ## Examples
