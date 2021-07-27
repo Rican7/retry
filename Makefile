@@ -27,14 +27,14 @@ install-deps:
 	go get -d -t ./...
 
 install-deps-dev: install-deps
-	go get github.com/golang/lint/golint
+	go get golang.org/x/lint/golint
 	go get golang.org/x/tools/cmd/goimports
 
 update-deps:
 	go get -d -t -u ./...
 
 update-deps-dev: update-deps
-	go get -u github.com/golang/lint/golint
+	go get -u golang.org/x/lint/golint
 	go get -u golang.org/x/tools/cmd/goimports
 
 test:
