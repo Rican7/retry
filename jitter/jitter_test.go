@@ -96,6 +96,6 @@ func TestFallbackNewRandom(t *testing.T) {
 	}
 
 	if result := fallbackNewRandom(nil); nil == result {
-		t.Error("recieved unexpected nil result")
+		t.Error("received unexpected nil result")
 	}
 }
