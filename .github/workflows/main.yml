@@ -36,7 +36,7 @@ jobs:
           ${{ runner.os }}-go-
 
     - name: Download dependencies
-      run: go mod download
+      run: make install-deps install-deps-dev
 
     - name: Lint
       run: make lint

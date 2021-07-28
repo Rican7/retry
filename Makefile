@@ -1,3 +1,11 @@
+# Define directories
+ROOT_DIR ?= ${CURDIR}
+TOOLS_DIR ?= ${ROOT_DIR}/tools
+
+# Set a local GOBIN, since the default value can't be trusted
+# (See https://github.com/golang/go/issues/23439)
+export GOBIN ?= ${TOOLS_DIR}/bin
+
 # Set the mode for code-coverage
 GO_TEST_COVERAGE_MODE ?= count
 GO_TEST_COVERAGE_FILE_NAME ?= coverage.out
@@ -20,16 +28,13 @@ build:
 install-deps:
 	go mod download
 
-install-deps-dev: install-deps
-	go get golang.org/x/lint/golint
-	go get golang.org/x/tools/cmd/goimports
+tools install-deps-dev:
+	cd tools && go install \
+		golang.org/x/lint/golint \
+		golang.org/x/tools/cmd/goimports
 
 update-deps:
-	go get -d -t -u ./...
-
-update-deps-dev: update-deps
-	go get -u golang.org/x/lint/golint
-	go get -u golang.org/x/tools/cmd/goimports
+	go get ./...
 
 test:
 	go test -v ./...
@@ -46,11 +51,11 @@ test-with-coverage-profile:
 format-lint:
 	errors=$$(gofmt -l ${GOFMT_FLAGS} .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
-import-lint:
-	errors=$$(goimports -l .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
+import-lint: install-deps-dev
+	errors=$$(${GOBIN}/goimports -l .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
-style-lint:
-	errors=$$(golint -min_confidence=${GOLINT_MIN_CONFIDENCE} ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
+style-lint: install-deps-dev
+	errors=$$(${GOBIN}/golint -min_confidence=${GOLINT_MIN_CONFIDENCE} ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
 lint: install-deps-dev format-lint import-lint style-lint
 
@@ -64,4 +69,4 @@ vet:
 	go vet ./...
 
 
-.PHONY: all clean build install-deps install-deps-dev update-deps update-deps-dev test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet
+.PHONY: all clean build install-deps tools install-deps-dev update-deps test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet

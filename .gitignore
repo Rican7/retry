@@ -1,0 +1,5 @@
+# Tools binaries
+/tools/bin
+
+# Code coverage files
+coverage.out
