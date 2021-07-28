@@ -35,17 +35,13 @@ test:
 	go test -v ./...
 
 test-with-coverage:
-	go test -cover ./...
+	go test -cover -covermode ${GO_TEST_COVERAGE_MODE} ./...
 
 test-with-coverage-formatted:
-	go test -cover ./... | column -t | sort -r
+	go test -cover -covermode ${GO_TEST_COVERAGE_MODE} ./... | column -t | sort -r
 
 test-with-coverage-profile:
-	echo "mode: ${GO_TEST_COVERAGE_MODE}" > ${GO_TEST_COVERAGE_FILE_NAME}
-	for package in $$(go list ./...); do \
-		go test -covermode ${GO_TEST_COVERAGE_MODE} -coverprofile "coverage_$${package##*/}.out" "$${package}"; \
-		sed '1d' "coverage_$${package##*/}.out" >> ${GO_TEST_COVERAGE_FILE_NAME}; \
-	done
+	go test -covermode ${GO_TEST_COVERAGE_MODE} -coverprofile ${GO_TEST_COVERAGE_FILE_NAME} ./...
 
 format-lint:
 	errors=$$(gofmt -l ${GOFMT_FLAGS} .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
