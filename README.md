@@ -1,6 +1,6 @@
 # retry
 
-[![Build Status](https://travis-ci.org/Rican7/retry.svg?branch=master)](https://travis-ci.org/Rican7/retry)
+[![Build Status](https://github.com/Rican7/retry/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Rican7/retry/actions/workflows/main.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Rican7/retry/badge.svg)](https://coveralls.io/github/Rican7/retry)
 [![Go Report Card](https://goreportcard.com/badge/Rican7/retry)](http://goreportcard.com/report/Rican7/retry)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Rican7/retry.svg)](https://pkg.go.dev/github.com/Rican7/retry)
