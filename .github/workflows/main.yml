@@ -1,0 +1,53 @@
+name: Main
+
+on:
+  push:
+    branches: ['*']
+    tags: ['v*']
+  pull_request:
+    branches: ['*']
+
+env:
+  GO_TEST_COVERAGE_FILE_NAME: coverage.out
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.15.x', '1.16.x']
+
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ matrix.go }}
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Load cached dependencies
+      uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Lint
+      run: make lint
+
+    - name: Test
+      run: make test-with-coverage-profile
+
+    - name: Send code coverage to coveralls
+      if: ${{ matrix.go == '1.16.x' }}
+      env:
+        COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        go install github.com/mattn/goveralls@latest
+        goveralls -coverprofile="$GO_TEST_COVERAGE_FILE_NAME" -service=github
