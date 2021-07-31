@@ -14,7 +14,7 @@ GO_TEST_COVERAGE_FILE_NAME ?= coverage.out
 GOFMT_FLAGS ?= -s
 
 # Set a default `min_confidence` value for `golint`
-GOLINT_MIN_CONFIDENCE ?= 0.3
+GOLINT_MIN_CONFIDENCE ?= 0.1
 
 
 all: build
@@ -56,7 +56,7 @@ import-lint: install-deps-dev
 	errors=$$(${GOBIN}/goimports -l .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
 style-lint: install-deps-dev
-	errors=$$(${GOBIN}/golint -min_confidence=${GOLINT_MIN_CONFIDENCE} ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
+	${GOBIN}/golint -min_confidence=${GOLINT_MIN_CONFIDENCE} -set_exit_status ./...
 	${GOBIN}/staticcheck ./...
 
 lint: install-deps-dev format-lint import-lint style-lint
