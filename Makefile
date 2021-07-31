@@ -61,14 +61,14 @@ style-lint: install-deps-dev
 
 lint: install-deps-dev format-lint import-lint style-lint
 
+vet:
+	go vet ./...
+
 format-fix:
 	gofmt -w ${GOFMT_FLAGS} .
 
 import-fix:
 	goimports -w .
 
-vet:
-	go vet ./...
 
-
-.PHONY: all clean build install-deps tools install-deps-dev update-deps test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet
+.PHONY: all clean build install-deps tools install-deps-dev update-deps test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint vet format-fix import-fix
