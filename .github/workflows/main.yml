@@ -41,6 +41,9 @@ jobs:
     - name: Lint
       run: make lint
 
+    - name: Vet
+      run: make vet
+
     - name: Test
       run: make test-with-coverage-profile
 
