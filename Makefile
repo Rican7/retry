@@ -31,7 +31,8 @@ install-deps:
 tools install-deps-dev:
 	cd tools && go install \
 		golang.org/x/lint/golint \
-		golang.org/x/tools/cmd/goimports
+		golang.org/x/tools/cmd/goimports \
+		honnef.co/go/tools/cmd/staticcheck
 
 update-deps:
 	go get ./...
@@ -56,6 +57,7 @@ import-lint: install-deps-dev
 
 style-lint: install-deps-dev
 	errors=$$(${GOBIN}/golint -min_confidence=${GOLINT_MIN_CONFIDENCE} ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
+	${GOBIN}/staticcheck ./...
 
 lint: install-deps-dev format-lint import-lint style-lint
 
