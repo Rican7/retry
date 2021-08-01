@@ -114,7 +114,8 @@ func TestWaitWithMultipleDurations(t *testing.T) {
 }
 
 func TestBackoff(t *testing.T) {
-	const backoffDuration = time.Duration(10 * timeMarginOfError)
+	const testCycles = 10
+	const backoffDuration = time.Duration(testCycles * timeMarginOfError)
 	const algorithmDurationBase = timeMarginOfError
 
 	algorithm := func(attempt uint) time.Duration {
@@ -127,8 +128,15 @@ func TestBackoff(t *testing.T) {
 		t.Error("strategy expected to return true in ~0 time")
 	}
 
-	for i := uint(1); i < 10; i++ {
+	for i := uint(1); i < testCycles; i++ {
 		expectedResult := algorithm(i)
+
+		if expectedResult < 0 {
+			t.Errorf(
+				"algorithm returned a negative duration %s",
+				expectedResult,
+			)
+		}
 
 		if now := time.Now(); !strategy(i) || expectedResult > time.Since(now) {
 			t.Errorf(
@@ -140,7 +148,8 @@ func TestBackoff(t *testing.T) {
 }
 
 func TestBackoffWithJitter(t *testing.T) {
-	const backoffDuration = time.Duration(10 * timeMarginOfError)
+	const testCycles = 10
+	const backoffDuration = time.Duration(2 * testCycles * timeMarginOfError)
 	const algorithmDurationBase = timeMarginOfError
 
 	algorithm := func(attempt uint) time.Duration {
@@ -148,7 +157,7 @@ func TestBackoffWithJitter(t *testing.T) {
 	}
 
 	transformation := func(duration time.Duration) time.Duration {
-		return duration - time.Duration(10*timeMarginOfError)
+		return duration - (backoffDuration / 2)
 	}
 
 	strategy := BackoffWithJitter(algorithm, transformation)
@@ -157,8 +166,15 @@ func TestBackoffWithJitter(t *testing.T) {
 		t.Error("strategy expected to return true in ~0 time")
 	}
 
-	for i := uint(1); i < 10; i++ {
+	for i := uint(1); i < testCycles; i++ {
 		expectedResult := transformation(algorithm(i))
+
+		if expectedResult < 0 {
+			t.Errorf(
+				"transformation returned a negative duration %s",
+				expectedResult,
+			)
+		}
 
 		if now := time.Now(); !strategy(i) || expectedResult > time.Since(now) {
 			t.Errorf(
