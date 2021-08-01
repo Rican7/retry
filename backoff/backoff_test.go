@@ -15,7 +15,7 @@ func TestIncremental(t *testing.T) {
 
 	for i := uint(0); i < 10; i++ {
 		result := algorithm(i)
-		expected := duration + (increment * time.Duration(i))
+		expected := duration + (time.Duration(i) * increment)
 
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
@@ -30,7 +30,7 @@ func TestLinear(t *testing.T) {
 
 	for i := uint(0); i < 10; i++ {
 		result := algorithm(i)
-		expected := duration * time.Duration(i)
+		expected := time.Duration(i) * duration
 
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
@@ -46,7 +46,7 @@ func TestExponential(t *testing.T) {
 
 	for i := uint(0); i < 10; i++ {
 		result := algorithm(i)
-		expected := duration * time.Duration(math.Pow(base, float64(i)))
+		expected := time.Duration(math.Pow(base, float64(i))) * duration
 
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
@@ -61,7 +61,7 @@ func TestBinaryExponential(t *testing.T) {
 
 	for i := uint(0); i < 10; i++ {
 		result := algorithm(i)
-		expected := duration * time.Duration(math.Pow(2, float64(i)))
+		expected := time.Duration(math.Pow(2, float64(i))) * duration
 
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
@@ -76,7 +76,7 @@ func TestFibonacci(t *testing.T) {
 
 	for i := uint(0); i < 10; i++ {
 		result := algorithm(i)
-		expected := duration * time.Duration(fibonacciNumber(i))
+		expected := time.Duration(fibonacciNumber(i)) * duration
 
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
