@@ -12,7 +12,7 @@ func TestRetry(t *testing.T) {
 
 	err := Retry(action)
 
-	if nil != err {
+	if err != nil {
 		t.Error("expected a nil error")
 	}
 }
@@ -71,7 +71,7 @@ func TestRetryRetriesUntilNoErrorReturned(t *testing.T) {
 
 	err := Retry(action)
 
-	if nil != err {
+	if err != nil {
 		t.Error("expected a nil error")
 	}
 
