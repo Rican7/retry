@@ -10,9 +10,15 @@ import (
 const timeMarginOfError = time.Millisecond
 
 func TestLimit(t *testing.T) {
+	// Strategy attempts are 0-based.
+	// Treat this functionally as n+1.
 	const attemptLimit = 3
 
 	strategy := Limit(attemptLimit)
+
+	if !strategy(0) {
+		t.Error("strategy expected to return true")
+	}
 
 	if !strategy(1) {
 		t.Error("strategy expected to return true")
@@ -22,11 +28,7 @@ func TestLimit(t *testing.T) {
 		t.Error("strategy expected to return true")
 	}
 
-	if !strategy(3) {
-		t.Error("strategy expected to return true")
-	}
-
-	if strategy(4) {
+	if strategy(3) {
 		t.Error("strategy expected to return false")
 	}
 }

@@ -17,7 +17,7 @@ func Retry(action Action, strategies ...strategy.Strategy) error {
 	var err error
 
 	for attempt := uint(0); (attempt == 0 || err != nil) && shouldAttempt(attempt, strategies...); attempt++ {
-		err = action(attempt)
+		err = action(attempt + 1)
 	}
 
 	return err

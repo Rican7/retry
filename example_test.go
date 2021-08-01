@@ -69,6 +69,8 @@ func Example_httpGetWithStrategies() {
 
 func Example_withBackoffJitter() {
 	action := func(attempt uint) error {
+		fmt.Println("attempt", attempt)
+
 		return errors.New("something happened")
 	}
 
@@ -83,4 +85,11 @@ func Example_withBackoffJitter() {
 			jitter.Deviation(random, 0.5),
 		),
 	)
+
+	// Output:
+	// attempt 1
+	// attempt 2
+	// attempt 3
+	// attempt 4
+	// attempt 5
 }
