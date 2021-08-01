@@ -15,9 +15,9 @@ import (
 // allows for the next attempt to be made. Returning `false` halts the retrying
 // process and returns the last error returned by the called Action.
 //
-// The strategy will be passed an "attempt" number on each successive retry
+// The strategy will be passed an "attempt" number before each successive retry
 // iteration, starting with a `0` value before the first attempt is actually
-// made. This allows for a pre-action delay, etc.
+// made. This allows for a pre-action, such as a delay, etc.
 type Strategy func(attempt uint) bool
 
 // Limit creates a Strategy that limits the number of attempts that Retry will
