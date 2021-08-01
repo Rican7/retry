@@ -79,7 +79,7 @@ func NormalDistribution(generator *rand.Rand, standardDeviation float64) Transfo
 // and otherwise returns a new random instance seeded with the current time.
 func fallbackNewRandom(random *rand.Rand) *rand.Rand {
 	// Return the passed in value if it's already not null
-	if nil != random {
+	if random != nil {
 		return random
 	}
 

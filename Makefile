@@ -14,7 +14,7 @@ GO_TEST_COVERAGE_FILE_NAME ?= coverage.out
 GOFMT_FLAGS ?= -s
 
 # Set a default `min_confidence` value for `golint`
-GOLINT_MIN_CONFIDENCE ?= 0.3
+GOLINT_MIN_CONFIDENCE ?= 0.1
 
 
 all: build
@@ -31,7 +31,8 @@ install-deps:
 tools install-deps-dev:
 	cd tools && go install \
 		golang.org/x/lint/golint \
-		golang.org/x/tools/cmd/goimports
+		golang.org/x/tools/cmd/goimports \
+		honnef.co/go/tools/cmd/staticcheck
 
 update-deps:
 	go get ./...
@@ -55,9 +56,13 @@ import-lint: install-deps-dev
 	errors=$$(${GOBIN}/goimports -l .); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
 
 style-lint: install-deps-dev
-	errors=$$(${GOBIN}/golint -min_confidence=${GOLINT_MIN_CONFIDENCE} ./...); if [ "$${errors}" != "" ]; then echo "$${errors}"; exit 1; fi
+	${GOBIN}/golint -min_confidence=${GOLINT_MIN_CONFIDENCE} -set_exit_status ./...
+	${GOBIN}/staticcheck ./...
 
 lint: install-deps-dev format-lint import-lint style-lint
+
+vet:
+	go vet ./...
 
 format-fix:
 	gofmt -w ${GOFMT_FLAGS} .
@@ -65,8 +70,5 @@ format-fix:
 import-fix:
 	goimports -w .
 
-vet:
-	go vet ./...
 
-
-.PHONY: all clean build install-deps tools install-deps-dev update-deps test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint format-fix import-fix vet
+.PHONY: all clean build install-deps tools install-deps-dev update-deps test test-with-coverage test-with-coverage-formatted test-with-coverage-profile format-lint import-lint style-lint lint vet format-fix import-fix

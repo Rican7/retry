@@ -32,7 +32,7 @@ func Limit(attemptLimit uint) Strategy {
 // attempt is made.
 func Delay(duration time.Duration) Strategy {
 	return func(attempt uint) bool {
-		if 0 == attempt {
+		if attempt == 0 {
 			time.Sleep(duration)
 		}
 
@@ -45,7 +45,7 @@ func Delay(duration time.Duration) Strategy {
 // provided, then the strategy uses the last duration provided.
 func Wait(durations ...time.Duration) Strategy {
 	return func(attempt uint) bool {
-		if 0 < attempt && 0 < len(durations) {
+		if attempt > 0 && len(durations) > 0 {
 			durationIndex := int(attempt - 1)
 
 			if len(durations) <= durationIndex {
@@ -69,7 +69,7 @@ func Backoff(algorithm backoff.Algorithm) Strategy {
 // duration as defined by the given backoff.Algorithm and jitter.Transformation.
 func BackoffWithJitter(algorithm backoff.Algorithm, transformation jitter.Transformation) Strategy {
 	return func(attempt uint) bool {
-		if 0 < attempt {
+		if attempt > 0 {
 			time.Sleep(transformation(algorithm(attempt)))
 		}
 
