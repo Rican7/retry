@@ -17,6 +17,43 @@ func TestRetry(t *testing.T) {
 	}
 }
 
+func TestRetryAttemptNumberIsAccurate(t *testing.T) {
+	var strategyAttemptNumber uint
+	var actionAttemptNumber uint
+
+	strategy := func(attempt uint) bool {
+		strategyAttemptNumber = attempt
+
+		return true
+	}
+
+	action := func(attempt uint) error {
+		actionAttemptNumber = attempt
+
+		return nil
+	}
+
+	err := Retry(action, strategy)
+
+	if err != nil {
+		t.Error("expected a nil error")
+	}
+
+	if strategyAttemptNumber != 0 {
+		t.Errorf(
+			"expected strategy to receive 0, received %v instead",
+			strategyAttemptNumber,
+		)
+	}
+
+	if actionAttemptNumber != 1 {
+		t.Errorf(
+			"expected action to receive 1, received %v instead",
+			actionAttemptNumber,
+		)
+	}
+}
+
 func TestRetryRetriesUntilNoErrorReturned(t *testing.T) {
 	const errorUntilAttemptNumber = 5
 
