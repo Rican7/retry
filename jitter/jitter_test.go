@@ -95,7 +95,7 @@ func TestFallbackNewRandom(t *testing.T) {
 		t.Errorf("result expected to match parameter, received %+v instead", result)
 	}
 
-	if result := fallbackNewRandom(nil); nil == result {
+	if result := fallbackNewRandom(nil); result == nil {
 		t.Error("received unexpected nil result")
 	}
 }

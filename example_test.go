@@ -34,7 +34,7 @@ func Example_fileOpen() {
 		return err
 	})
 
-	if nil != err {
+	if err != nil {
 		log.Fatalf("Unable to open file %q with error %q", logFilePath, err)
 	}
 
@@ -49,7 +49,7 @@ func Example_httpGetWithStrategies() {
 
 		response, err = http.Get("https://api.github.com/repos/Rican7/retry")
 
-		if nil == err && nil != response && response.StatusCode > 200 {
+		if err == nil && response != nil && response.StatusCode > 200 {
 			err = fmt.Errorf("failed to fetch (attempt #%d) with status code: %d", attempt, response.StatusCode)
 		}
 
@@ -62,7 +62,7 @@ func Example_httpGetWithStrategies() {
 		strategy.Backoff(backoff.Fibonacci(10*time.Millisecond)),
 	)
 
-	if nil != err {
+	if err != nil {
 		log.Fatalf("Failed to fetch repository with error %q", err)
 	}
 }

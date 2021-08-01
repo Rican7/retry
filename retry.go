@@ -16,7 +16,7 @@ type Action func(attempt uint) error
 func Retry(action Action, strategies ...strategy.Strategy) error {
 	var err error
 
-	for attempt := uint(0); (0 == attempt || nil != err) && shouldAttempt(attempt, strategies...); attempt++ {
+	for attempt := uint(0); (attempt == 0 || err != nil) && shouldAttempt(attempt, strategies...); attempt++ {
 		err = action(attempt)
 	}
 
