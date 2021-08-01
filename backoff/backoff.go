@@ -57,11 +57,9 @@ func Fibonacci(factor time.Duration) Algorithm {
 // fibonacciNumber calculates the Fibonacci sequence number for the given
 // sequence position.
 func fibonacciNumber(n uint) uint {
-	if n == 0 {
-		return 0
-	} else if n == 1 {
-		return 1
-	} else {
-		return fibonacciNumber(n-1) + fibonacciNumber(n-2)
+	if n == 0 || n == 1 {
+		return n
 	}
+
+	return fibonacciNumber(n-1) + fibonacciNumber(n-2)
 }
