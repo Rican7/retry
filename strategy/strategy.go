@@ -24,7 +24,7 @@ type Strategy func(attempt uint) bool
 // make.
 func Limit(attemptLimit uint) Strategy {
 	return func(attempt uint) bool {
-		return (attempt <= attemptLimit)
+		return (attempt < attemptLimit)
 	}
 }
 
