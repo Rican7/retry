@@ -104,13 +104,14 @@ func ExampleIncremental() {
 		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
-		// Output:
-		// #1 attempt: 25ms
-		// #2 attempt: 35ms
-		// #3 attempt: 45ms
-		// #4 attempt: 55ms
-		// #5 attempt: 65ms
 	}
+
+	// Output:
+	// #1 attempt: 25ms
+	// #2 attempt: 35ms
+	// #3 attempt: 45ms
+	// #4 attempt: 55ms
+	// #5 attempt: 65ms
 }
 
 func ExampleLinear() {
@@ -120,13 +121,14 @@ func ExampleLinear() {
 		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
-		// Output:
-		// #1 attempt: 15ms
-		// #2 attempt: 30ms
-		// #3 attempt: 45ms
-		// #4 attempt: 60ms
-		// #5 attempt: 75ms
 	}
+
+	// Output:
+	// #1 attempt: 15ms
+	// #2 attempt: 30ms
+	// #3 attempt: 45ms
+	// #4 attempt: 60ms
+	// #5 attempt: 75ms
 }
 
 func ExampleExponential() {
@@ -136,13 +138,14 @@ func ExampleExponential() {
 		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
-		// Output:
-		// #1 attempt: 45ms
-		// #2 attempt: 135ms
-		// #3 attempt: 405ms
-		// #4 attempt: 1.215s
-		// #5 attempt: 3.645s
 	}
+
+	// Output:
+	// #1 attempt: 45ms
+	// #2 attempt: 135ms
+	// #3 attempt: 405ms
+	// #4 attempt: 1.215s
+	// #5 attempt: 3.645s
 }
 
 func ExampleBinaryExponential() {
@@ -152,13 +155,14 @@ func ExampleBinaryExponential() {
 		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
-		// Output:
-		// #1 attempt: 30ms
-		// #2 attempt: 60ms
-		// #3 attempt: 120ms
-		// #4 attempt: 240ms
-		// #5 attempt: 480ms
 	}
+
+	// Output:
+	// #1 attempt: 30ms
+	// #2 attempt: 60ms
+	// #3 attempt: 120ms
+	// #4 attempt: 240ms
+	// #5 attempt: 480ms
 }
 
 func ExampleFibonacci() {
@@ -168,11 +172,12 @@ func ExampleFibonacci() {
 		duration := algorithm(i)
 
 		fmt.Printf("#%d attempt: %s\n", i, duration)
-		// Output:
-		// #1 attempt: 15ms
-		// #2 attempt: 15ms
-		// #3 attempt: 30ms
-		// #4 attempt: 45ms
-		// #5 attempt: 75ms
 	}
+
+	// Output:
+	// #1 attempt: 15ms
+	// #2 attempt: 15ms
+	// #3 attempt: 30ms
+	// #4 attempt: 45ms
+	// #5 attempt: 75ms
 }
