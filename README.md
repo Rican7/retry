@@ -14,6 +14,9 @@ A simple, stateless, functional mechanism to perform actions repetitively until 
 This project is currently in "pre-release". While the code is heavily tested, the API may change.
 Use a tagged version or vendor this dependency if you plan on using it.
 
+That said, this code has been used in production without issue for years, and has been used by some relatively
+[high-profile projects/codebases](https://pkg.go.dev/github.com/Rican7/retry?tab=importedby).
+
 
 ## Examples
 
