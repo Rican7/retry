@@ -34,7 +34,7 @@ func Linear(factor time.Duration) Algorithm {
 // calculated as the given base raised to the attempt number.
 func Exponential(factor time.Duration, base float64) Algorithm {
 	return func(attempt uint) time.Duration {
-		return (factor * time.Duration(math.Pow(base, float64(attempt))))
+		return time.Duration(float64(factor) * math.Pow(base, float64(attempt)))
 	}
 }
 

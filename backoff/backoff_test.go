@@ -40,13 +40,13 @@ func TestLinear(t *testing.T) {
 
 func TestExponential(t *testing.T) {
 	const duration = time.Second
-	const base = 3
+	const base = 1.5
 
 	algorithm := Exponential(duration, base)
 
 	for i := uint(0); i < 10; i++ {
 		result := algorithm(i)
-		expected := time.Duration(math.Pow(base, float64(i))) * duration
+		expected := time.Duration(math.Pow(base, float64(i)) * float64(duration))
 
 		if result != expected {
 			t.Errorf("algorithm expected to return a %s duration, but received %s instead", expected, result)
@@ -132,7 +132,7 @@ func ExampleLinear() {
 }
 
 func ExampleExponential() {
-	algorithm := Exponential(15*time.Millisecond, 3)
+	algorithm := Exponential(15*time.Millisecond, 1.5)
 
 	for i := uint(1); i <= 5; i++ {
 		duration := algorithm(i)
@@ -141,11 +141,11 @@ func ExampleExponential() {
 	}
 
 	// Output:
-	// #1 attempt: 45ms
-	// #2 attempt: 135ms
-	// #3 attempt: 405ms
-	// #4 attempt: 1.215s
-	// #5 attempt: 3.645s
+	// #1 attempt: 22.5ms
+	// #2 attempt: 33.75ms
+	// #3 attempt: 50.625ms
+	// #4 attempt: 75.9375ms
+	// #5 attempt: 113.90625ms
 }
 
 func ExampleBinaryExponential() {
