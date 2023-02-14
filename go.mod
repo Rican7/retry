@@ -1,3 +1,3 @@
 module github.com/Rican7/retry
 
-go 1.11
+go 1.19

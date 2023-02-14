@@ -16,19 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.16.x', '1.17.x']
+        go: ['1.19.x', '1.20.x']
 
     steps:
     - name: Setup Go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go }}
 
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Load cached dependencies
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -48,7 +48,7 @@ jobs:
       run: make test-with-coverage-profile
 
     - name: Send code coverage to coveralls
-      if: ${{ matrix.go == '1.17.x' }}
+      if: ${{ matrix.go == '1.20.x' }}
       env:
         COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
